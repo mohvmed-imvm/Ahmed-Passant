@@ -489,6 +489,7 @@ const [finaleReady, setFinaleReady] = useState(false);
 const [giftOpening, setGiftOpening] = useState(false);
 
   const audioRef = useRef(null);
+  const letterAudioRef = useRef(null);
   const progressTimer = useRef(null);
   const pictureTimer = useRef(null);
 useEffect(() => {
@@ -688,6 +689,12 @@ function openRadio() {
 
   return (
     <main className={`experience stage-${stage}`}>
+    <audio
+  ref={letterAudioRef}
+  src={`${import.meta.env.BASE_URL}assets/letter-song.mp3`}
+  loop
+  preload="auto"
+/>
       <div className="paper-grain" />
 {(stage === "countdown" || stage === "gift") && (
   <>
@@ -918,15 +925,28 @@ function openRadio() {
       aria-label="افتح الورقة"
 onClick={() => {
   setStage("notebook");
+
+  if (letterAudioRef.current) {
+    letterAudioRef.current.currentTime = 0;
+    letterAudioRef.current.play().catch(() => {});
+  }
+
   window.scrollTo({ top: 0, behavior: "instant" });
 }}
-      onKeyDown={(event) => {
-        if (event.key === "Enter" || event.key === " ") {
-          event.preventDefault();
-          setStage("notebook");
-window.scrollTo({ top: 0, behavior: "instant" });
-        }
-      }}
+onKeyDown={(event) => {
+  if (event.key === "Enter" || event.key === " ") {
+    event.preventDefault();
+
+    setStage("notebook");
+
+    if (letterAudioRef.current) {
+      letterAudioRef.current.currentTime = 0;
+      letterAudioRef.current.play().catch(() => {});
+    }
+
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }
+}}
     >
       <div className="teaser-lines">
         <span />
